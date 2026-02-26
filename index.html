@@ -10,7 +10,7 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
     body { background-color: #ffffff; }
@@ -652,7 +652,7 @@
 
                 <div className="flex-1 min-w-0">
                   {currentCategoryData && (
-                    <>
+                    <React.Fragment>
                       <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm py-4 mb-6 border-b border-gray-100 flex items-center justify-between">
                         <h2 className="text-xl font-bold">
                           {iconLang === 'en' && currentCategoryData.enTitle ? currentCategoryData.enTitle : currentCategoryData.title}
@@ -692,7 +692,7 @@
                           </div>
                         </section>
                       ))}
-                    </>
+                    </React.Fragment>
                   )}
                 </div>
               </div>
