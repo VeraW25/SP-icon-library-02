@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SP Icon Library</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <style>
+    body { background-color: #ffffff; }
+    html { scroll-behavior: smooth; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // --- 替換 Lucide React 的原生 SVG 圖示元件 ---
+    const Search = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    );
+
+    const ArrowLeftIcon = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    );
+
+    // --- 真實資料區：產品規格專區 ---
+    const REAL_PRODUCT_ICONS = [
+      { id: 1, name: '記憶體', enName: 'Memory Module', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/products/memory-module.png' },
+      { id: 2, name: '固態硬碟', enName: 'SSD', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/products/ssd.png' },
+      { id: 3, name: '外接固態硬碟', enName: 'External SSD', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/products/external-ssd.png' },
+      { id: 4, name: '行動電源', enName: 'Power Bank', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/products/power-bank.png' },
+      { id: 5, name: '記憶卡', enName: 'Memory Card', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/products/sd-card.png' },
+      { id: 6, name: '隨身碟', enName: 'Flash Drive', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/products/flash-drive.png' },
+      { id: 7, name: '配件', enName: 'Accessories', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/products/accessories.png' },
+    ];
+
+    const REAL_SPEED_ICONS = [
+      { id: 7, name: 'V90高速傳輸規格', enName: 'High-Speed Standard V90', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/high-speed-standard-v90.png', group: '速度等級', enGroup: 'Speed Class' },
+      { id: 6, name: 'V60高速傳輸規格', enName: 'High-Speed Standard V60', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/high-speed-standard-v60.png', group: '速度等級', enGroup: 'Speed Class' },
+      { id: 5, name: 'V30高速傳輸規格', enName: 'High-Speed Standard V30', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/high-speed-standard-v30.png', group: '速度等級', enGroup: 'Speed Class' },
+      { id: 8, name: '啟動時間縮短', enName: 'Faster Boot Time', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/faster-boot-time.png', group: '讀寫行為', enGroup: 'Read/Write Behavior' },
+      { id: 4, name: '讀寫速度', enName: 'Read/Write Speed', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/read-write-speed.png', group: '讀寫行為', enGroup: 'Read/Write Behavior' },
+      { id: 2, name: '讀取速度', enName: 'Read Speed', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/read-speed.png', group: '讀寫行為', enGroup: 'Read/Write Behavior' },
+      { id: 3, name: '寫入速度', enName: 'Write Speed', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/write-speed.png', group: '讀寫行為', enGroup: 'Read/Write Behavior' },
+      { id: 1, name: '高持續寫入', enName: 'High Sustained Write', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/high-sustained-write.png', group: '讀寫行為', enGroup: 'Read/Write Behavior' },
+      { id: 11, name: '性能提升', enName: 'Performance Boost', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/performance-boost.png', group: '效能特色', enGroup: 'Performance Features' },
+      { id: 10, name: '極速效能', enName: 'Extreme Performance', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/extreme-performance.png', group: '效能特色', enGroup: 'Performance Features' },
+      { id: 12, name: 'SLC Cache', enName: 'SLC Cache', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/slc-cache.png', group: '效能特色', enGroup: 'Performance Features' },
+    ];
+
+    const REAL_POWER_ICONS = [
+      { id: 1, name: 'PD快充', enName: 'PD Fast Charging', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/pd-fast-charging.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 2, name: 'QC快充', enName: 'QC Fast Charging', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/qc-fast-charging.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 23, name: '支援雙快充3.0', enName: 'QC / PD 3.0', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/dual-fast-charging-3.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 24, name: '支援雙快充4.0', enName: 'QC / PD 4.0', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/dual-fast-charging-4.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 4, name: '雙向快充', enName: 'Bi-Directional Fast Charging', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/bi-directional-fast-charging.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 6, name: '磁吸充電', enName: 'Magnetic Charging', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/magnetic-charging.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 5, name: '無線快充', enName: 'Wireless Charging', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/wireless-charging.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 7, name: '多裝置充電', enName: 'Multi-Device Charging', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/multi-device-charging.png', group: '充電技術', enGroup: 'Charging Tech' },
+      { id: 8, name: '功率輸出(W)', enName: 'Power Output (W)', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/power-output-(w).png', group: '電池規格', enGroup: 'Battery Specs' },
+      { id: 12, name: '輕量電芯', enName: 'Lightweight Battery Core', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/lightweight-battery-core.png', group: '電池規格', enGroup: 'Battery Specs' },
+      { id: 11, name: '未超過100wh', enName: 'Under 100Wh', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/under-100wh.png', group: '電池規格', enGroup: 'Battery Specs' },
+      { id: 10, name: '電壓福特(V)', enName: 'Voltage (V)', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/voltage-(v).png', group: '電池規格', enGroup: 'Battery Specs' },
+      { id: 9, name: '毫安培(mAh)', enName: 'mAh Capacity', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/mAh-capacity.png', group: '電池規格', enGroup: 'Battery Specs' },
+      { id: 13, name: '電力相關', enName: 'Power Related', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/power-related.png', group: '功能與狀態', enGroup: 'Features & Status' },
+      { id: 17, name: '數位顯示', enName: 'Digital Display', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/digital-display.png', group: '功能與狀態', enGroup: 'Features & Status' },
+      { id: 18, name: 'LED電量顯示', enName: 'LED Power Display', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/led-power-display.png', group: '功能與狀態', enGroup: 'Features & Status' },
+      { id: 14, name: '電力保護', enName: 'Power Protection', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/power-protection.png', group: '功能與狀態', enGroup: 'Features & Status' },
+      { id: 16, name: '低電壓', enName: 'Low Voltage', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/low-voltage.png', group: '功能與狀態', enGroup: 'Features & Status' },
+      { id: 22, name: '通用電壓', enName: 'Universal Voltage', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/universal-voltage.png', group: '功能與狀態', enGroup: 'Features & Status' },
+      { id: 15, name: '自動省電', enName: 'Auto Power Saving', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/auto-power-saving.png', group: '功能與狀態', enGroup: 'Features & Status' },
+      { id: 21, name: '絕緣處理', enName: 'Insulation Treatment', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/insulation-treatment.png', group: '飛航相關', enGroup: 'Aviation Safety' },
+      { id: 20, name: '飛行禁止', enName: 'Flight Restricted', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/flight-restricted.png', group: '飛航相關', enGroup: 'Aviation Safety' },
+      { id: 19, name: '飛航安全', enName: 'Aviation Safety', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/electricity/aviation-safety.png', group: '飛航相關', enGroup: 'Aviation Safety' },
+    ];
+
+    const REAL_PROTECTION_ICONS = [
+      { id: 1, name: 'IP4防水', enName: 'IPX4 Waterproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/ipx4-waterproof.png', group: '環境防護', enGroup: 'Environmental Protection' },
+      { id: 2, name: '防塵', enName: 'Dustproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/dustproof.png', group: '環境防護', enGroup: 'Environmental Protection' },
+      { id: 9, name: '防曬防炎', enName: 'UV & Fire Resistant', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/uv-fire-resistant.png', group: '環境防護', enGroup: 'Environmental Protection' },
+      { id: 10, name: '防X光輻射', enName: 'X-Ray Protection', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/x-ray-protection.png', group: '環境防護', enGroup: 'Environmental Protection' },
+      { id: 3, name: '防震防水', enName: 'Waterproof & Shockproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/waterproof-shockproof.png', group: '抗震耐用', enGroup: 'Shockproof & Durability' },
+      { id: 4, name: '輕薄抗震', enName: 'Slim Shockproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/slim-shockproof.png', group: '抗震耐用', enGroup: 'Shockproof & Durability' },
+      { id: 5, name: '軍規防震', enName: 'Military-Grade Shockproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/military-grade-shockproof.png', group: '抗震耐用', enGroup: 'Shockproof & Durability' },
+      { id: 6, name: '防摔落', enName: 'Drop Protection', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/drop-protection.png', group: '抗震耐用', enGroup: 'Shockproof & Durability' },
+      { id: 7, name: '防刮耐磨', enName: 'Scratch & Wear Resistant', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/scratch-wear-resistant.png', group: '抗震耐用', enGroup: 'Shockproof & Durability' },
+      { id: 8, name: '防指紋沾染', enName: 'Anti-fingerprint', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/anti-fingerprint.png', group: '抗震耐用', enGroup: 'Shockproof & Durability' },
+      { id: 11, name: '溫度範圍', enName: 'Temperature Range', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/temperature-range.png', group: '溫控散熱', enGroup: 'Temperature Control' },
+      { id: 12, name: '高效散熱', enName: 'High-Efficiency Cooling', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/high-efficiency-cooling.png', group: '溫控散熱', enGroup: 'Temperature Control' },
+      { id: 13, name: '極致散熱', enName: 'Extreme Cooling', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/protection/extreme-cooling.png', group: '溫控散熱', enGroup: 'Temperature Control' },
+    ];
+
+    const REAL_INTERFACE_ICONS = [
+      { id: 1, name: 'USB A', enName: 'USB A', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/usb-a.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 2, name: 'Type-C', enName: 'Type-C', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/type-c.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 4, name: 'Type-C / USB A', enName: 'Type-C / USB A', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/type-c-usb-A.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 5, name: 'Type-C to Type-C', enName: 'Type-C to Type-C', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/type-c-to-type-c.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 6, name: 'USB-A to Lighting', enName: 'USB-A to Lighting', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/usb-a-to-lighting.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 7, name: 'USB 3.2 Gen 2', enName: 'USB 3.2 Gen 2', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/usb-3.2-gen-2.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 11, name: '三輸出埠', enName: 'Triple Output', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/triple-output.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 12, name: '四輸出埠', enName: 'Quad Output', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/quad-output.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 28, name: '七合一', enName: '7-in-1', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/7-in-1.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 29, name: '十合一', enName: '10-in-1', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/10-in-1.png', group: '傳輸介面', enGroup: 'Transmission Interface' },
+      { id: 3, name: '4K HDMI', enName: '4K HDMI', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/4k-hdmi.png', group: '影音規格', enGroup: 'Audio/Video Specs' },
+      { id: 8, name: '4K UHD', enName: '4K UHD', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/4k-uhd.png', group: '影音規格', enGroup: 'Audio/Video Specs' },
+      { id: 9, name: '8K UHD', enName: '8K UHD', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/8k-uhd.png', group: '影音規格', enGroup: 'Audio/Video Specs' },
+      { id: 10, name: 'HD 1080P', enName: 'HD 1080P', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/hd-1080p.png', group: '影音規格', enGroup: 'Audio/Video Specs' },
+      { id: 13, name: '360° 不掉蓋', enName: '360° Cap-Free', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/360-cap-free.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 20, name: '滑推設計', enName: 'Slide Design', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/slide-design.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 21, name: '線材收納', enName: 'Cable Management', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/cable-management.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 22, name: '內建充電線', enName: 'Built-in Charging Cable', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/built-in-charging-cable.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 24, name: '雙接頭設計', enName: 'Dual Connector Design', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/dual-connector-design.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 17, name: '輕薄設備(重量)', enName: 'Slim Device', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/slim-device.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 18, name: '輕薄設備(外觀)', enName: 'Light weight Device', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/lightweight-device.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 19, name: '強力磁吸(手機)', enName: 'Strong Magnetic Attachment', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/strong-magnetic-attachment.png', group: '結構設計', enGroup: 'Structural Design' },
+      { id: 26, name: '超凡設計', enName: 'Exceptional Design', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/exceptional-design.png', group: '外觀工藝與功能', enGroup: 'Appearance & Functions' },
+      { id: 27, name: '優質工藝', enName: 'Premium Craftsmanship', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/premium-craftsmanship.png', group: '外觀工藝與功能', enGroup: 'Appearance & Functions' },
+      { id: 15, name: 'LED 燈效', enName: 'LED Indicator', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/led-Indicator.png', group: '外觀工藝與功能', enGroup: 'Appearance & Functions' },
+      { id: 16, name: 'RGB 燈效', enName: 'RGB Lighting', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/rgb-lighting.png', group: '外觀工藝與功能', enGroup: 'Appearance & Functions' },
+      { id: 14, name: '安靜無聲', enName: 'Silent Operation', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/silent-operation.png', group: '外觀工藝與功能', enGroup: 'Appearance & Functions' },
+      { id: 23, name: '負重五公斤', enName: '5kg Load Capacity', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/up-to-5kg.png', group: '外觀工藝與功能', enGroup: 'Appearance & Functions' },
+      { id: 25, name: '多規選擇', enName: 'Multiple Options', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/interface/multiple-options.png', group: '外觀工藝與功能', enGroup: 'Appearance & Functions' },
+    ];
+
+    const REAL_DEVICE_ICONS = [
+      { id: 1, name: '桌電適用', enName: 'Desktop Compatible', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/desktop-compatible.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 2, name: '筆電適用', enName: 'Laptop Compatible', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/laptop-compatible.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 3, name: '電競桌電', enName: 'Gaming Desktop', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/gaming-desktop.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 4, name: '掌機適用', enName: 'Handheld Console Compatible', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/handheld-console-compatible.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 5, name: '順暢體驗(PS5)', enName: 'Smooth Experience', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/smooth-experience.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 6, name: '手機適用', enName: 'Smartphone Compatible', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/smartphone-compatible.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 7, name: '手遊玩家', enName: 'Mobile Gamer', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/mobile-gamer.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 8, name: '桌機/筆電', enName: 'Desktop/Laptop', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/desktop-laptop.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 9, name: '桌機/PS5', enName: 'Desktop/PS5', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/desktop-ps5.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 10, name: '筆電/平板', enName: 'Laptop/Tablet', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/laptop-tablet.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 11, name: '筆電/遊戲機/平板', enName: 'Laptop/Game Console/Tablet', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/laptop-game-consol-tablet.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 12, name: 'PS4/桌機/筆電', enName: 'PS4/Desktop/Laptop', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/ps4-desktop-laptop.png', group: '運算與遊戲裝置', enGroup: 'Computing & Gaming' },
+      { id: 13, name: '專業攝影', enName: 'Professional Photography', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/professional-photography.png', group: '影像與攝錄設備', enGroup: 'Imaging & Recording' },
+      { id: 14, name: '照片', enName: 'Photos', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/photos.png', group: '影像與攝錄設備', enGroup: 'Imaging & Recording' },
+      { id: 15, name: '影視製作', enName: 'Video Production', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/video-production.png', group: '影像與攝錄設備', enGroup: 'Imaging & Recording' },
+      { id: 16, name: '行車紀錄', enName: 'Dash Cam', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/dash-cam.png', group: '影像與攝錄設備', enGroup: 'Imaging & Recording' },
+      { id: 17, name: '監控設備', enName: 'Surveillance Equipment', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/surveillance-equipment.png', group: '影像與攝錄設備', enGroup: 'Imaging & Recording' },
+      { id: 18, name: '車用音響', enName: 'Car Audio', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/car-audio.png', group: '影音娛樂與其他', enGroup: 'A/V & Others' },
+      { id: 19, name: '音樂', enName: 'Music', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/music.png', group: '影音娛樂與其他', enGroup: 'A/V & Others' },
+      { id: 20, name: '電視', enName: 'Television', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/television.png', group: '影音娛樂與其他', enGroup: 'A/V & Others' },
+      { id: 21, name: 'e-Book', enName: 'e-Book', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/device/e-book.png', group: '影音娛樂與其他', enGroup: 'A/V & Others' },
+    ];
+
+    const REAL_CERTIFICATION_ICONS = [
+      { id: 1, name: '國際認證Wh', enName: 'International Certified Wh', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/international-certified-wh.png', group: '認證標章', enGroup: 'Certification Marks' },
+      { id: 2, name: 'NAS認證設計', enName: 'NAS Certified Design', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/nas-certified-design.png', group: '認證標章', enGroup: 'Certification Marks' },
+      { id: 3, name: 'MFi認證(蘋果認證)', enName: 'MFi Certified', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/mfi-certified.png', group: '認證標章', enGroup: 'Certification Marks' },
+      { id: 4, name: 'BSMI認證', enName: 'BSMI Certified', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/bsmi-certified.png', group: '認證標章', enGroup: 'Certification Marks' },
+      { id: 5, name: '多國認證安全', enName: 'Multi-National Safety Certification', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/multi-national-safety-certification.png', group: '認證標章', enGroup: 'Certification Marks' },
+      { id: 6, name: '3D NAND', enName: '3D NAND', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/3d-nand.png', group: '晶片與技術', enGroup: 'Chips & Tech' },
+      { id: 7, name: 'LDPC', enName: 'LDPC', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/ldpc.png', group: '晶片與技術', enGroup: 'Chips & Tech' },
+      { id: 8, name: '智慧平均抹寫', enName: 'Smart Wear Leveling', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/smart-wear-leveling.png', group: '晶片與技術', enGroup: 'Chips & Tech' },
+      { id: 9, name: 'V-0 阻燃等級', enName: 'V-0 Flame Retardant Rating', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/v-0-flame-retardant-rating.png', group: '晶片與技術', enGroup: 'Chips & Tech' },
+      { id: 16, name: 'AI 晶片', enName: 'AI Chip', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/ai-chip.png', group: '晶片與技術', enGroup: 'Chips & Tech' },
+      { id: 17, name: 'PCIe Gen 5x4 介面', enName: 'PCIe Gen 5x4 Interface', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/pcIe-gen-5x4-Interface.png', group: '技術規範', enGroup: 'Technical Specs' },
+      { id: 18, name: 'CFexpress 4.0 Type B', enName: 'CFexpress 4.0 Type B', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/cfexpress-4.0-type-b.png', group: '技術規範', enGroup: 'Technical Specs' },
+      { id: 19, name: '支援XMP', enName: 'Supports XMP', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/supports-xmp.png', group: '技術規範', enGroup: 'Technical Specs' },
+      { id: 20, name: '支援EXPO', enName: 'Supports EXPO', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/supports-expo.png', group: '技術規範', enGroup: 'Technical Specs' },
+      { id: 21, name: 'CL30~CL40', enName: 'CL30~CL40', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/speed/cl30-cl40.png', group: '技術規範', enGroup: 'Technical Specs' },
+      { id: 10, name: '高容量', enName: 'High Capacity', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/high-capacity.png', group: '容量與特性', enGroup: 'Capacity & Features' },
+      { id: 11, name: '最高4TB容量', enName: 'High 4TB Capacity', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/high-4tb-capacity.png', group: '容量與特性', enGroup: 'Capacity & Features' },
+      { id: 12, name: '最大容量', enName: 'Maximum Capacity', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/maximum-capacity.png', group: '容量與特性', enGroup: 'Capacity & Features' },
+      { id: 13, name: '資料保護', enName: 'Data Protection', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/data-protection.png', group: '容量與特性', enGroup: 'Capacity & Features' },
+      { id: 14, name: '卓越相容性', enName: 'Superior Compatibility', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/superior-compatibility.png', group: '容量與特性', enGroup: 'Capacity & Features' },
+      { id: 15, name: '強大穩定性', enName: 'Strong Stability', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/certification/strong-stability.png', group: '容量與特性', enGroup: 'Capacity & Features' },
+    ];
+
+    const REAL_BUSINESS_ICONS = [
+      { id: 1, name: '顧客服務', enName: 'Customer Service', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/customer-service.png', group: '售後服務', enGroup: 'After-Sales Service' },
+      { id: 2, name: '申請換貨', enName: 'Exchange Request', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/exchange-request.png', group: '售後服務', enGroup: 'After-Sales Service' },
+      { id: 3, name: '退貨', enName: 'Return', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/return.png', group: '售後服務', enGroup: 'After-Sales Service' },
+      { id: 4, name: '換貨', enName: 'Product Exchange', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/product-exchange.png', group: '售後服務', enGroup: 'After-Sales Service' },
+      { id: 5, name: '終身保固', enName: 'Lifetime Warranty', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/lifetime-warranty.png', group: '售後服務', enGroup: 'After-Sales Service' },
+      { id: 6, name: '企業級方案', enName: 'Enterprise Grade Solution', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/enterprise-grade-solution.png', group: '企業資訊', enGroup: 'Corporate Information' },
+      { id: 7, name: '公司大樓', enName: 'Company HQ', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/company-hq.png', group: '企業資訊', enGroup: 'Corporate Information' },
+      { id: 8, name: '專屬工程團隊', enName: 'Dedicated Engineering Team', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/dedicated-engineering-team.png', group: '企業資訊', enGroup: 'Corporate Information' },
+      { id: 9, name: '值得信賴', enName: 'Trustworthy', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/trustworthy.png', group: '企業資訊', enGroup: 'Corporate Information' },
+      { id: 10, name: '靈活客製化', enName: 'Highly Flexible Customization', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/highly-flexible-customization.png', group: '企業資訊', enGroup: 'Corporate Information' },
+      { id: 11, name: '高效經濟方案', enName: 'Cost-Effective Solutions', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/cost-effective-solutions.png', group: '企業資訊', enGroup: 'Corporate Information' },
+      { id: 12, name: '永續設計', enName: 'Sustainable Design', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/sustainable-design.png', group: '企業資訊', enGroup: 'Corporate Information' },
+      { id: 13, name: '郵件信箱', enName: 'Email Support', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/email-support.png', group: '聯絡與通知', enGroup: 'Contact & Notifications' },
+      { id: 14, name: '通話設備', enName: 'Call Support', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/call-support.png', group: '聯絡與通知', enGroup: 'Contact & Notifications' },
+      { id: 15, name: '地理資訊', enName: 'Location', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/location.png', group: '聯絡與通知', enGroup: 'Contact & Notifications' },
+      { id: 16, name: '資訊設定', enName: 'Information Settings', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/information-settings.png', group: '聯絡與通知', enGroup: 'Contact & Notifications' },
+      { id: 17, name: '通知警告', enName: 'Notifications & Alerts', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/serve/notifications-alerts.png', group: '聯絡與通知', enGroup: 'Contact & Notifications' },
+    ];
+
+    // --- 真實資料區：品牌識別專區 ---
+    const REAL_BRAND_PRODUCT_ICONS = [
+      { id: 1, name: '固態硬碟', enName: 'SSD', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/(pink)products/ssd.png', group: '產品類別', enGroup: 'Product Categories' },
+      { id: 2, name: '行動固態硬碟', enName: 'Portable SSD', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/(pink)products/phd.png', group: '產品類別', enGroup: 'Product Categories' },
+      { id: 3, name: '外接式行動硬碟', enName: 'External Portable Drive', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/(pink)products/psd.png', group: '產品類別', enGroup: 'Product Categories' },
+      { id: 4, name: '記憶體', enName: 'Memory Module', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/(pink)products/memory-card.png', group: '產品類別', enGroup: 'Product Categories' },
+      { id: 5, name: '記憶卡', enName: 'Memory Card', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/(pink)products/sd-card.png', group: '產品類別', enGroup: 'Product Categories' },
+      { id: 6, name: '行動電源', enName: 'Power Bank', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/(pink)products/power-bank.png', group: '產品類別', enGroup: 'Product Categories' },
+      { id: 7, name: '配件', enName: 'Accessories', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/(pink)products/accessories.png', group: '產品類別', enGroup: 'Product Categories' },
+    ];
+
+    const REAL_BRAND_ECOMMERCE_ICONS = [
+      { id: 1, name: '會員招募', enName: 'Member Recruitment', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/member-recruitment.png', group: '會員機制', enGroup: 'Member Mechanism' },
+      { id: 2, name: '會員綁定', enName: 'Member Linking', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/member-linking.png', group: '會員機制', enGroup: 'Member Mechanism' },
+      { id: 3, name: '官方購物網', enName: 'Official Online Store', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/official-online-store.png', group: '會員機制', enGroup: 'Member Mechanism' },
+      { id: 4, name: 'SP會員日', enName: 'SP Member Day', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/sp-member-day.png', group: '會員機制', enGroup: 'Member Mechanism' },
+      { id: 5, name: '購物金', enName: 'Shopping Credits', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/shopping-credits.png', group: '會員機制', enGroup: 'Member Mechanism' },
+      { id: 6, name: '專屬禮品', enName: 'Exclusive Gifts', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/exclusive-gifts.png', group: '會員機制', enGroup: 'Member Mechanism' },
+      { id: 7, name: '消費累點', enName: 'Points Accumulation', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/points-accumulation.png', group: '會員機制', enGroup: 'Member Mechanism' },
+      { id: 9, name: '掃描註冊', enName: 'Scan to Register', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/scan-to-register.png', group: '購物流程', enGroup: 'Shopping Process' },
+      { id: 10, name: '填寫資料', enName: 'Fill in Information', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/fill-in-information.png', group: '購物流程', enGroup: 'Shopping Process' },
+      { id: 11, name: '訂單成立', enName: 'Order Confirmed', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/order-confirmed.png', group: '購物流程', enGroup: 'Shopping Process' },
+      { id: 13, name: '付款出貨', enName: 'Payment & Shipping', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/payment-shipping.png', group: '購物流程', enGroup: 'Shopping Process' },
+      { id: 12, name: '訂單查詢', enName: 'Order Tracking', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/order-tracking.png', group: '購物流程', enGroup: 'Shopping Process' },
+      { id: 8, name: '大宗採購', enName: 'Bulk Purchase', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/e-shop/bulk-purchase.png', group: '購物流程', enGroup: 'Shopping Process' },
+    ];
+
+    const REAL_BRAND_SUPPORT_ICONS = [
+      { id: 301, name: '客服', enName: 'Customer Support', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/support.png', group: '諮詢管道', enGroup: 'Support Channels' },
+      { id: 302, name: '溝通確認', enName: 'Communication', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/confirm.png', group: '諮詢管道', enGroup: 'Support Channels' },
+      { id: 303, name: 'E-Mail', enName: 'E-Mail', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/e-mail.png', group: '諮詢管道', enGroup: 'Support Channels' },
+      { id: 304, name: '兩者E-mail相同', enName: 'Identical E-mail', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/same-email.png', group: '諮詢管道', enGroup: 'Support Channels' },
+      { id: 305, name: '常見問題', enName: 'FAQ', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/faq.png', group: '諮詢管道', enGroup: 'Support Channels' },
+      { id: 306, name: '維修', enName: 'Repair', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/repair.png', group: '保固維修', enGroup: 'Warranty & Repair' },
+      { id: 307, name: '保固/維修申請', enName: 'Service Request', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/service-request.png', group: '保固維修', enGroup: 'Warranty & Repair' },
+      { id: 308, name: '保固', enName: 'Warranty', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/warranty.png', group: '保固維修', enGroup: 'Warranty & Repair' },
+      { id: 309, name: '產品保障', enName: 'Product Protection', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/protection.png', group: '保固維修', enGroup: 'Warranty & Repair' },
+      { id: 310, name: '產品相容性', enName: 'Compatibility', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/support/compatibility.png', group: '保固維修', enGroup: 'Warranty & Repair' },
+    ];
+
+    const REAL_BRAND_MARKETING_ICONS = [
+      { id: 406, name: '活動資訊', enName: 'Events', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/events.png', group: '促銷購物', enGroup: 'Promotion & Shopping' },
+      { id: 407, name: '新品上市', enName: 'New Arrivals', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/new.png', group: '促銷購物', enGroup: 'Promotion & Shopping' },
+      { id: 408, name: '熱銷排行榜', enName: 'Best Sellers', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/best-sellers.png', group: '促銷購物', enGroup: 'Promotion & Shopping' },
+      { id: 409, name: '福利品特惠', enName: 'Deals', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/deals.png', group: '促銷購物', enGroup: 'Promotion & Shopping' },
+      { id: 401, name: '依內容挑選', enName: 'Shop by Use', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/by-use.png', group: '導覽內容', enGroup: 'Navigation Content' },
+      { id: 402, name: '全系列總覽', enName: 'Overview', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/overview.png', group: '導覽內容', enGroup: 'Navigation Content' },
+      { id: 403, name: 'AI工具', enName: 'AI Tools', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/ai-tools.png', group: '導覽內容', enGroup: 'Navigation Content' },
+      { id: 404, name: '生活體驗', enName: 'Lifestyle', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/lifestyle.png', group: '導覽內容', enGroup: 'Navigation Content' },
+      { id: 405, name: '獨家內容', enName: 'Exclusive', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/marketing/exclusive.png', group: '導覽內容', enGroup: 'Navigation Content' },
+    ];
+
+    const REAL_BRAND_FEATURES_ICONS = [
+      { id: 501, name: '4000+產品', enName: '4000+ Products', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/4000-products.png', group: '品牌實力', enGroup: 'Brand Strength' },
+      { id: 502, name: '銷量破萬', enName: '10k+ Sales', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/10k-sales.png', group: '品牌實力', enGroup: 'Brand Strength' },
+      { id: 503, name: '銷售百國', enName: 'Sold in 100+ Countries', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/global.png', group: '品牌實力', enGroup: 'Brand Strength' },
+      { id: 504, name: '國際獎項', enName: 'International Awards', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/awards.png', group: '品牌實力', enGroup: 'Brand Strength' },
+      { id: 505, name: '台灣製造（MIT）', enName: 'Made in Taiwan (MIT)', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/made-in-taiwan.png', group: '品牌實力', enGroup: 'Brand Strength' },
+      { id: 506, name: '值得信賴', enName: 'Trusted', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/trusted.png', group: '品牌實力', enGroup: 'Brand Strength' },
+      { id: 507, name: '優質工藝', enName: 'Premium Craftsmanship', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/craftsmanship.png', group: '技術優勢', enGroup: 'Technical Advantages' },
+      { id: 508, name: '超凡設計', enName: 'Exceptional Design', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/design.png', group: '技術優勢', enGroup: 'Technical Advantages' },
+      { id: 509, name: '炫彩燈效', enName: 'RGB Lighting', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/rgb-lighting.png', group: '技術優勢', enGroup: 'Technical Advantages' },
+      { id: 510, name: '極致散熱', enName: 'Extreme Cooling', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/cooling.png', group: '技術優勢', enGroup: 'Technical Advantages' },
+      { id: 511, name: '極速效能', enName: 'Extreme Performance', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/brand/performance.png', group: '技術優勢', enGroup: 'Technical Advantages' },
+    ];
+
+    const REAL_BRAND_CORPORATE_ICONS = [
+      { id: 601, name: 'SP Logo', enName: 'SP Logo', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/corporate/logo.png', group: '企業形象', enGroup: 'Corporate Identity' },
+      { id: 602, name: '公司股票代碼', enName: 'Stock Code', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/corporate/stock-code.png', group: '企業形象', enGroup: 'Corporate Identity' },
+      { id: 603, name: '團隊合作', enName: 'Teamwork', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/corporate/teamwork.png', group: '企業形象', enGroup: 'Corporate Identity' },
+      { id: 604, name: '學習成長', enName: 'Learning & Growth', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/corporate/wellness.png', group: '企業形象', enGroup: 'Corporate Identity' },
+      { id: 605, name: '健康照顧', enName: 'Health & Wellness', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/corporate/growth.png', group: '企業形象', enGroup: 'Corporate Identity' },
+    ];
+
+    // --- 首頁預覽圖示處理函數 ---
+    const mapPreviews = (icons) => icons.slice(0, 6).map((item, idx) => (
+      <img key={idx} src={item.imageUrl} alt={item.name} className="w-8 h-8 sm:w-10 sm:h-10 object-contain opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300" />
+    ));
+
+    const realProductPreviews = mapPreviews(REAL_PRODUCT_ICONS);
+    const realSpeedPreviews = mapPreviews(REAL_SPEED_ICONS);
+    const realPowerPreviews = mapPreviews(REAL_POWER_ICONS);
+    const realProtectionPreviews = mapPreviews(REAL_PROTECTION_ICONS);
+    const realInterfacePreviews = mapPreviews(REAL_INTERFACE_ICONS);
+    const realDevicePreviews = mapPreviews(REAL_DEVICE_ICONS);
+    const realCertificationPreviews = mapPreviews(REAL_CERTIFICATION_ICONS);
+    const realBusinessPreviews = mapPreviews(REAL_BUSINESS_ICONS);
+
+    const realBrandProductPreviews = mapPreviews(REAL_BRAND_PRODUCT_ICONS);
+    const realBrandEcommercePreviews = mapPreviews(REAL_BRAND_ECOMMERCE_ICONS);
+    const realBrandSupportPreviews = mapPreviews(REAL_BRAND_SUPPORT_ICONS);
+    const realBrandMarketingPreviews = mapPreviews(REAL_BRAND_MARKETING_ICONS);
+    const realBrandFeaturesPreviews = mapPreviews(REAL_BRAND_FEATURES_ICONS);
+    const realBrandCorporatePreviews = mapPreviews(REAL_BRAND_CORPORATE_ICONS);
+
+    // --- 混合資料庫配置 ---
+    const PRODUCT_CATEGORIES = [
+      { id: 'product', title: '產品類別', enTitle: 'Products', count: REAL_PRODUCT_ICONS.length, icons: realProductPreviews },
+      { id: 'speed', title: '傳輸速度與效能', enTitle: 'Speed & Performance', count: REAL_SPEED_ICONS.length, icons: realSpeedPreviews },
+      { id: 'power', title: '電力與充電', enTitle: 'Power & Charging', count: REAL_POWER_ICONS.length, icons: realPowerPreviews },
+      { id: 'protection', title: '防護與耐用', enTitle: 'Protection & Durability', count: REAL_PROTECTION_ICONS.length, icons: realProtectionPreviews },
+      { id: 'interface', title: '產品介面與外觀', enTitle: 'Interface & Appearance', count: REAL_INTERFACE_ICONS.length, icons: realInterfacePreviews },
+      { id: 'environment', title: '裝置與環境', enTitle: 'Device & Environment', count: REAL_DEVICE_ICONS.length, icons: realDevicePreviews },
+      { id: 'certification', title: '認證與技術', enTitle: 'Certification & Tech', count: REAL_CERTIFICATION_ICONS.length, icons: realCertificationPreviews },
+      { id: 'business', title: '商業服務與通用', enTitle: 'Business & General', count: REAL_BUSINESS_ICONS.length, icons: realBusinessPreviews }
+    ];
+
+    const BRAND_CATEGORIES = [
+      { id: 'brand-product', title: '產品類別', enTitle: 'Product Categories', count: REAL_BRAND_PRODUCT_ICONS.length, icons: realBrandProductPreviews },
+      { id: 'brand-ecommerce', title: '會員電商', enTitle: 'Member E-commerce', count: REAL_BRAND_ECOMMERCE_ICONS.length, icons: realBrandEcommercePreviews },
+      { id: 'brand-support', title: '客服支援', enTitle: 'Customer Support', count: REAL_BRAND_SUPPORT_ICONS.length, icons: realBrandSupportPreviews },
+      { id: 'brand-marketing', title: '行銷活動', enTitle: 'Marketing Events', count: REAL_BRAND_MARKETING_ICONS.length, icons: realBrandMarketingPreviews },
+      { id: 'brand-features', title: '品牌特色', enTitle: 'Brand Features', count: REAL_BRAND_FEATURES_ICONS.length, icons: realBrandFeaturesPreviews },
+      { id: 'brand-corporate', title: '企業形象', enTitle: 'Corporate Image', count: REAL_BRAND_CORPORATE_ICONS.length, icons: realBrandCorporatePreviews }
+    ];
+
+    const generateMockDB = (categories, isProductZone) => {
+      return categories.reduce((acc, cat) => {
+        let targetIcons = null;
+        if (isProductZone) {
+          if (cat.id === 'product') targetIcons = REAL_PRODUCT_ICONS;
+          else if (cat.id === 'speed') targetIcons = REAL_SPEED_ICONS;
+          else if (cat.id === 'power') targetIcons = REAL_POWER_ICONS;
+          else if (cat.id === 'protection') targetIcons = REAL_PROTECTION_ICONS;
+          else if (cat.id === 'interface') targetIcons = REAL_INTERFACE_ICONS;
+          else if (cat.id === 'environment') targetIcons = REAL_DEVICE_ICONS;
+          else if (cat.id === 'certification') targetIcons = REAL_CERTIFICATION_ICONS;
+          else if (cat.id === 'business') targetIcons = REAL_BUSINESS_ICONS;
+        } else {
+          if (cat.id === 'brand-product') targetIcons = REAL_BRAND_PRODUCT_ICONS;
+          else if (cat.id === 'brand-ecommerce') targetIcons = REAL_BRAND_ECOMMERCE_ICONS;
+          else if (cat.id === 'brand-support') targetIcons = REAL_BRAND_SUPPORT_ICONS;
+          else if (cat.id === 'brand-marketing') targetIcons = REAL_BRAND_MARKETING_ICONS;
+          else if (cat.id === 'brand-features') targetIcons = REAL_BRAND_FEATURES_ICONS;
+          else if (cat.id === 'brand-corporate') targetIcons = REAL_BRAND_CORPORATE_ICONS;
+        }
+
+        if (targetIcons) {
+          const groupedData = targetIcons.reduce((groupAcc, item) => {
+            const groupKey = item.group || '全部';
+            if (!groupAcc[groupKey]) {
+              groupAcc[groupKey] = { enGroup: item.enGroup || 'All', icons: [] };
+            }
+            groupAcc[groupKey].icons.push({
+              name: item.name,
+              enName: item.enName,
+              icon: <img src={item.imageUrl} alt={item.name} className="w-16 h-16 object-contain" />
+            });
+            return groupAcc;
+          }, {});
+
+          acc[cat.id] = Object.entries(groupedData).map(([groupName, data], idx) => ({
+            id: `${cat.id}-${idx}`,
+            section: groupName,
+            enSection: data.enGroup,
+            icons: data.icons
+          }));
+        } else {
+          acc[cat.id] = [{
+            id: `${cat.id}-all`,
+            section: `全部圖示`,
+            enSection: `All Icons`,
+            icons: cat.icons.map((icon, i) => ({
+              name: `${cat.title} ${i + 1}`,
+              enName: `Icon ${i + 1}`,
+              icon: <img src={icon.props.src} alt="icon" className="w-16 h-16 object-contain" />
+            }))
+          }];
+        }
+        return acc;
+      }, {});
+    };
+
+    const MOCK_DATABASE_PRODUCT = generateMockDB(PRODUCT_CATEGORIES, true);
+    const MOCK_DATABASE_BRAND = generateMockDB(BRAND_CATEGORIES, false);
+
+    // --- UI 元件區 ---
+    const IconCell = ({ iconData, theme, language }) => {
+      const displayName = language === 'en' && iconData.enName ? iconData.enName : iconData.name;
+
+      return (
+        <div
+          className="group flex flex-col items-center justify-start p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-200 relative w-full h-full min-h-[10.5rem] border border-transparent hover:border-gray-200"
+          title={displayName}
+        >
+          <div className={`mb-3 text-gray-700 transition-colors ${theme.iconHoverText} duration-300 flex items-center justify-center h-24 shrink-0 w-full`}>
+            {iconData.icon}
+          </div>
+          <span className="text-xs font-bold text-gray-800 group-hover:text-gray-900 text-center w-full px-1 leading-snug break-words">
+            {displayName}
+          </span>
+        </div>
+      );
+    };
+
+    function App() {
+      const [activeTab, setActiveTab] = useState('product'); 
+      const [currentView, setCurrentView] = useState('home'); 
+      const [searchQuery, setSearchQuery] = useState('');
+      const [iconLang, setIconLang] = useState('zh');
+
+      const theme = {
+        product: {
+          searchRing: 'focus:border-blue-500 focus:ring-blue-200',
+          cardHover: 'hover:border-blue-400',
+          cardIconHoverBg: 'group-hover:bg-blue-50',
+          cardIconHoverText: 'group-hover:text-blue-600',
+          iconHoverText: 'group-hover:text-blue-600',
+          sidebarActive: 'bg-blue-50 text-blue-600',
+          sidebarHover: 'hover:text-blue-600 hover:bg-blue-50/50',
+          sidebarBorder: 'border-blue-200',
+        },
+        brand: {
+          searchRing: 'focus:border-[#ee3d85] focus:ring-[#ee3d85]/30',
+          cardHover: 'hover:border-[#ee3d85]/40',
+          cardIconHoverBg: 'group-hover:bg-[#ee3d85]/5',
+          cardIconHoverText: 'group-hover:text-[#ee3d85]',
+          iconHoverText: 'group-hover:text-[#ee3d85]',
+          sidebarActive: 'bg-[#ee3d85]/10 text-[#ee3d85]',
+          sidebarHover: 'hover:text-[#ee3d85] hover:bg-[#ee3d85]/10',
+          sidebarBorder: 'border-[#ee3d85]/20',
+        }
+      }[activeTab];
+
+      const currentCategories = activeTab === 'product' ? PRODUCT_CATEGORIES : BRAND_CATEGORIES;
+      const currentDatabase = activeTab === 'product' ? MOCK_DATABASE_PRODUCT : MOCK_DATABASE_BRAND;
+
+      const navigateTo = (view) => {
+        setCurrentView(view);
+        setSearchQuery('');
+        window.scrollTo(0, 0);
+      };
+
+      const handleTabSwitch = (tab) => {
+        setActiveTab(tab);
+        setSearchQuery('');
+        navigateTo('home');
+      };
+
+      const isSearching = searchQuery.trim() !== '';
+      const globalSearchResults = [];
+      
+      if (isSearching) {
+        const seenNames = new Set();
+        Object.values(currentDatabase).forEach(sections => {
+          sections.forEach(section => {
+            section.icons.forEach(icon => {
+              const matchZHTW = icon.name.toLowerCase().includes(searchQuery.toLowerCase());
+              const matchEN = icon.enName && icon.enName.toLowerCase().includes(searchQuery.toLowerCase());
+              
+              if (matchZHTW || matchEN) {
+                if (!seenNames.has(icon.name)) {
+                  seenNames.add(icon.name);
+                  globalSearchResults.push(icon);
+                }
+              }
+            });
+          });
+        });
+      }
+
+      const currentCategoryData = currentCategories.find(c => c.id === currentView);
+      const innerSections = currentDatabase[currentView] || [];
+
+      return (
+        <div className="min-h-screen bg-white font-sans text-gray-900 transition-colors duration-300">
+          <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200">
+            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                {(currentView !== 'home' || isSearching) && (
+                  <button 
+                    onClick={() => navigateTo('home')}
+                    className="p-2 -ml-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+                    title="回首頁"
+                  >
+                    <ArrowLeftIcon size={20} />
+                  </button>
+                )}
+                <h1 
+                  className="text-lg font-bold tracking-tight cursor-pointer flex items-center gap-2"
+                  onClick={() => navigateTo('home')}
+                >
+                  <img src="https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/logo/spec.png" alt="SP Logo" className="h-8 w-auto object-contain" />
+                  Icon Library
+                </h1>
+              </div>
+
+              <div className="flex-1 max-w-md relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="text"
+                  placeholder={`在 ${activeTab === 'product' ? '產品規格' : '品牌視覺'} 中搜尋圖示`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`w-full pl-10 pr-4 py-2 bg-gray-100 border-transparent focus:bg-white rounded-full text-sm transition-all outline-none focus:ring-2 ${theme.searchRing}`}
+                />
+              </div>
+            </div>
+          </header>
+
+          <main className="max-w-7xl mx-auto px-6 py-8">
+            
+            {/* === 視圖 0：全局搜尋結果 === */}
+            {isSearching ? (
+              <div className="animate-fade-in w-full pt-2">
+                <div className="mb-8 pb-4 border-b border-gray-100 flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">
+                    {iconLang === 'en' ? `Search Results: ${searchQuery}` : `搜尋結果：${searchQuery}`}
+                  </h2>
+                  <span className="text-gray-500 text-sm bg-gray-100 px-3 py-1 rounded-full">
+                    {iconLang === 'en' ? `Found ${globalSearchResults.length} icons` : `找到 ${globalSearchResults.length} 個圖示`}
+                  </span>
+                </div>
+                
+                {globalSearchResults.length > 0 ? (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+                    {globalSearchResults.map((icon, index) => (
+                      <IconCell key={index} iconData={icon} theme={theme} language={iconLang} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-32 text-gray-500">
+                    <Search size={48} className="mx-auto mb-4 opacity-20" />
+                    <p>{iconLang === 'en' ? `No icons found matching "${searchQuery}"` : `找不到符合「${searchQuery}」的圖示`}</p>
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="mt-6 px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm font-medium transition-colors"
+                    >
+                      {iconLang === 'en' ? 'Clear Search' : '清除搜尋'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : 
+            
+            /* === 視圖 1：首頁分類 === */
+            currentView === 'home' ? (
+              <div className="animate-fade-in">
+                <div className="mb-10 text-center max-w-2xl mx-auto pt-6">
+                  <div className="inline-flex bg-gray-100 p-1 rounded-full relative">
+                    <button
+                      onClick={() => handleTabSwitch('product')}
+                      className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
+                        activeTab === 'product'
+                          ? 'bg-gray-900 text-white shadow-md'
+                          : 'text-gray-500 hover:text-blue-600 hover:bg-gray-200/50'
+                      }`}
+                    >
+                      產品規格專區
+                    </button>
+                    <button
+                      onClick={() => handleTabSwitch('brand')}
+                      className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
+                        activeTab === 'brand'
+                          ? 'bg-gray-900 text-white shadow-md'
+                          : 'text-gray-500 hover:text-[#ee3d85] hover:bg-gray-200/50'
+                      }`}
+                    >
+                      品牌識別專區
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto animate-fade-in" key={activeTab}>
+                  {currentCategories.map((category) => (
+                    <div
+                      key={category.id}
+                      onClick={() => navigateTo(category.id)}
+                      className={`group cursor-pointer rounded-2xl border-2 border-gray-100 p-5 xl:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white flex flex-col ${theme.cardHover}`}
+                    >
+                      <div className={`grid grid-cols-3 gap-3 xl:gap-4 mb-6 transition-colors duration-300 min-h-[6rem] items-center justify-items-center`}>
+                        {category.icons.map((icon, idx) => (
+                          <div key={idx} className={`text-gray-400 transition-colors duration-300 flex justify-center items-center w-full h-full ${theme.cardIconHoverText}`}>
+                            {icon}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-auto">
+                        <h3 className="text-base font-bold mb-1 text-gray-900">
+                          {iconLang === 'en' && category.enTitle ? category.enTitle : category.title}
+                        </h3>
+                        <p className="text-gray-500 text-sm font-medium">
+                          {category.count} {iconLang === 'en' ? 'icons' : '個圖示'}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : 
+            
+            /* === 視圖 2：內頁 === */
+            (
+              <div className="flex flex-col md:flex-row gap-10 animate-fade-in w-full">
+                
+                <aside className="w-full md:w-56 shrink-0 hidden md:block">
+                  <div className="sticky top-24">
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                      {activeTab === 'product' 
+                        ? (iconLang === 'en' ? 'Product Categories' : '產品規格分類') 
+                        : (iconLang === 'en' ? 'Brand Categories' : '品牌視覺分類')}
+                    </h3>
+                    <nav className="flex flex-col space-y-3">
+                      {currentCategories.map((cat) => (
+                        <div key={cat.id}>
+                          <button
+                            onClick={() => navigateTo(cat.id)}
+                            className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors font-medium text-sm flex items-center justify-between ${
+                              currentView === cat.id 
+                                ? theme.sidebarActive 
+                                : `text-gray-600 hover:text-black hover:bg-gray-50`
+                            }`}
+                          >
+                            <span>{iconLang === 'en' && cat.enTitle ? cat.enTitle : cat.title}</span>
+                          </button>
+                          
+                          {currentView === cat.id && innerSections.length > 0 && (
+                            <div className={`ml-3 mt-2 pl-3 border-l-2 flex flex-col space-y-2 ${theme.sidebarBorder}`}>
+                              {innerSections.map((section) => {
+                                const sectionName = iconLang === 'en' && section.enSection ? section.enSection : section.section;
+                                return (
+                                  <a
+                                    key={section.id}
+                                    href={`#${section.id}`}
+                                    className={`text-xs font-medium text-gray-500 px-3 py-2 rounded-md transition-colors block ${theme.sidebarHover}`}
+                                  >
+                                    {sectionName}
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </nav>
+                  </div>
+                </aside>
+
+                <div className="flex-1 min-w-0">
+                  {currentCategoryData && (
+                    <>
+                      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm py-4 mb-6 border-b border-gray-100 flex items-center justify-between">
+                        <h2 className="text-xl font-bold">
+                          {iconLang === 'en' && currentCategoryData.enTitle ? currentCategoryData.enTitle : currentCategoryData.title}
+                        </h2>
+                        
+                        <div className="flex bg-gray-100 p-1 rounded-lg">
+                          <button
+                            onClick={() => setIconLang('zh')}
+                            className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
+                              iconLang === 'zh' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                          >
+                            CH
+                          </button>
+                          <button
+                            onClick={() => setIconLang('en')}
+                            className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
+                              iconLang === 'en' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                          >
+                            EN
+                          </button>
+                        </div>
+                      </div>
+
+                      {innerSections.map((section) => (
+                        <section key={section.id} id={section.id} className="mb-10 scroll-mt-36">
+                          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6 pb-2 border-b-2 border-gray-200 flex items-center gap-2">
+                            {iconLang === 'en' && section.enSection ? section.enSection : section.section}
+                            <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-[10px]">{section.icons.length}</span>
+                          </h3>
+                          
+                          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+                            {section.icons.map((icon, index) => (
+                              <IconCell key={index} iconData={icon} theme={theme} language={iconLang} />
+                            ))}
+                          </div>
+                        </section>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    // 渲染 App
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
