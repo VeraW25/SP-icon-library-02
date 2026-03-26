@@ -288,6 +288,18 @@
       { id: 605, name: '健康照顧', enName: 'Health & Wellness', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/corporate/growth.png', group: '企業形象', enGroup: 'Corporate Identity' },
     ];
 
+    // 動態圖示歸類在產品規格專區
+    const REAL_PRODUCT_GIF_ICONS = [
+      { id: 701, name: 'IP4防水', enName: 'IPX4 Waterproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/ipx4-waterproof.gif', group: '防護與耐用', enGroup: 'Protection & Durability' },
+      { id: 702, name: '防曬防炎', enName: 'UV & Fire Resistant', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/uv&fire-resistant.gif', group: '防護與耐用', enGroup: 'Protection & Durability' },
+      { id: 703, name: '防X光輻射', enName: 'X-Ray Protection', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/x-ray-protection.gif', group: '防護與耐用', enGroup: 'Protection & Durability' },
+      { id: 704, name: '輕薄抗震', enName: 'Slim Shockproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/slim-shockproof.gif', group: '防護與耐用', enGroup: 'Protection & Durability' },
+      { id: 705, name: '軍規防震', enName: 'Military-Grade Shockproof', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/military-grade-shockproof.gif', group: '防護與耐用', enGroup: 'Protection & Durability' },
+      { id: 706, name: '耐插拔', enName: 'High Durability', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/high-durability.gif', group: '防護與耐用', enGroup: 'Protection & Durability' },
+      { id: 707, name: '溫度範圍', enName: 'Temperature Range', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/temperature-range.gif', group: '防護與耐用', enGroup: 'Protection & Durability' },
+      { id: 708, name: '電力相關', enName: 'Power Related', imageUrl: 'https://cdn.jsdelivr.net/gh/VeraW25/sp-icons/gif/power-related.gif', group: '電力與充電', enGroup: 'Power & Charging' },
+    ];
+
     // --- 首頁預覽圖示處理函數 ---
     const mapPreviews = (icons) => icons.slice(0, 6).map((item, idx) => (
       <img key={idx} src={item.imageUrl} alt={item.name} className="w-12 h-12 sm:w-14 sm:h-14 object-contain opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300" />
@@ -301,6 +313,9 @@
     const realDevicePreviews = mapPreviews(REAL_DEVICE_ICONS);
     const realCertificationPreviews = mapPreviews(REAL_CERTIFICATION_ICONS);
     const realBusinessPreviews = mapPreviews(REAL_BUSINESS_ICONS);
+    
+    // 產品動態預覽
+    const realProductGifPreviews = mapPreviews(REAL_PRODUCT_GIF_ICONS);
 
     const realBrandProductPreviews = mapPreviews(REAL_BRAND_PRODUCT_ICONS);
     const realBrandEcommercePreviews = mapPreviews(REAL_BRAND_ECOMMERCE_ICONS);
@@ -318,7 +333,8 @@
       { id: 'interface', title: '產品介面與外觀', enTitle: 'Interface & Appearance', count: REAL_INTERFACE_ICONS.length, icons: realInterfacePreviews },
       { id: 'environment', title: '裝置與環境', enTitle: 'Device & Environment', count: REAL_DEVICE_ICONS.length, icons: realDevicePreviews },
       { id: 'certification', title: '認證與技術', enTitle: 'Certification & Tech', count: REAL_CERTIFICATION_ICONS.length, icons: realCertificationPreviews },
-      { id: 'business', title: '商業服務與通用', enTitle: 'Business & General', count: REAL_BUSINESS_ICONS.length, icons: realBusinessPreviews }
+      { id: 'business', title: '商業服務與通用', enTitle: 'Business & General', count: REAL_BUSINESS_ICONS.length, icons: realBusinessPreviews },
+      { id: 'product-gif', title: '動態圖示', enTitle: 'Animated Icons', count: REAL_PRODUCT_GIF_ICONS.length, icons: realProductGifPreviews } // 加入 GIF 分類到產品區
     ];
 
     const BRAND_CATEGORIES = [
@@ -328,6 +344,7 @@
       { id: 'brand-marketing', title: '行銷活動', enTitle: 'Marketing Events', count: REAL_BRAND_MARKETING_ICONS.length, icons: realBrandMarketingPreviews },
       { id: 'brand-features', title: '品牌特色', enTitle: 'Brand Features', count: REAL_BRAND_FEATURES_ICONS.length, icons: realBrandFeaturesPreviews },
       { id: 'brand-corporate', title: '企業形象', enTitle: 'Corporate Image', count: REAL_BRAND_CORPORATE_ICONS.length, icons: realBrandCorporatePreviews }
+      // 品牌識別專區不再加入 GIF 分類
     ];
 
     const generateMockDB = (categories, isProductZone) => {
@@ -342,6 +359,7 @@
           else if (cat.id === 'environment') targetIcons = REAL_DEVICE_ICONS;
           else if (cat.id === 'certification') targetIcons = REAL_CERTIFICATION_ICONS;
           else if (cat.id === 'business') targetIcons = REAL_BUSINESS_ICONS;
+          else if (cat.id === 'product-gif') targetIcons = REAL_PRODUCT_GIF_ICONS; // 綁定產品 GIF 資料
         } else {
           if (cat.id === 'brand-product') targetIcons = REAL_BRAND_PRODUCT_ICONS;
           else if (cat.id === 'brand-ecommerce') targetIcons = REAL_BRAND_ECOMMERCE_ICONS;
@@ -402,7 +420,7 @@
           <div className={`mb-3 text-gray-700 transition-colors ${theme.iconHoverText} duration-300 flex items-center justify-center h-24 shrink-0 w-full`}>
             {iconData.icon}
           </div>
-          <span className="text-xs font-bold text-gray-800 group-hover:text-gray-900 text-center w-full px-1 leading-snug break-words">
+          <span className="text-sm font-bold text-gray-800 group-hover:text-gray-900 text-center w-full px-1 leading-snug break-words">
             {displayName}
           </span>
         </div>
@@ -453,6 +471,30 @@
         navigateTo('home');
       };
 
+      const renderCategoryCard = (category) => (
+        <div
+          key={category.id}
+          onClick={() => navigateTo(category.id)}
+          className={`group cursor-pointer rounded-2xl border-2 border-gray-100 p-5 xl:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white flex flex-col ${theme.cardHover}`}
+        >
+          <div className={`grid grid-cols-3 gap-3 xl:gap-4 mb-6 transition-colors duration-300 min-h-[7rem] items-center justify-items-center`}>
+            {category.icons.map((icon, idx) => (
+              <div key={idx} className={`text-gray-400 transition-colors duration-300 flex justify-center items-center w-full h-full ${theme.cardIconHoverText}`}>
+                {icon.type === 'img' ? icon : React.cloneElement(icon, { size: 48, strokeWidth: 1.5 })}
+              </div>
+            ))}
+          </div>
+          <div className="mt-auto">
+            <h3 className="text-base font-bold mb-1 text-gray-900">
+              {iconLang === 'en' && category.enTitle ? category.enTitle : category.title}
+            </h3>
+            <p className="text-gray-500 text-sm font-medium">
+              {category.count} {iconLang === 'en' ? 'icons' : '個圖示'}
+            </p>
+          </div>
+        </div>
+      );
+
       const isSearching = searchQuery.trim() !== '';
       const globalSearchResults = [];
       
@@ -477,6 +519,10 @@
 
       const currentCategoryData = currentCategories.find(c => c.id === currentView);
       const innerSections = currentDatabase[currentView] || [];
+
+      // 區分 PNG 與 GIF 類別以進行排版
+      const pngCategories = currentCategories.filter(c => !c.id.includes('gif'));
+      const gifCategories = currentCategories.filter(c => c.id.includes('gif'));
 
       return (
         <div className="min-h-screen bg-white font-sans text-gray-900 transition-colors duration-300">
@@ -505,12 +551,33 @@
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   type="text"
-                  placeholder={`在 ${activeTab === 'product' ? '產品規格' : '品牌視覺'} 中搜尋圖示`}
+                  placeholder={iconLang === 'en' ? `Search in ${activeTab === 'product' ? 'Product Specs' : 'Brand Identity'}...` : `在 ${activeTab === 'product' ? '產品規格' : '品牌視覺'} 中搜尋圖示`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={`w-full pl-10 pr-4 py-2 bg-gray-100 border-transparent focus:bg-white rounded-full text-sm transition-all outline-none focus:ring-2 ${theme.searchRing}`}
                 />
               </div>
+
+              {/* 將中英文切換按鈕移至全域的 Header 內 */}
+              <div className="flex bg-gray-100 p-1 rounded-lg shrink-0">
+                <button
+                  onClick={() => setIconLang('zh')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${
+                    iconLang === 'zh' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  CH
+                </button>
+                <button
+                  onClick={() => setIconLang('en')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${
+                    iconLang === 'en' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+
             </div>
           </header>
 
@@ -555,7 +622,7 @@
                 <div className="mb-10 text-center max-w-2xl mx-auto pt-6">
                 <div className="mb-10">
                     <span className="text-xl sm:text-2xl font-semibold text-gray-950 tracking-wide">
-                      Start browsing icons by category.
+                      {iconLang === 'en' ? 'Start browsing icons by category.' : '開始依分類瀏覽圖示。'}
                     </span>
                   </div>
                   <div className="inline-flex bg-gray-100 p-1 rounded-full relative">
@@ -567,7 +634,7 @@
                           : 'text-gray-500 hover:text-blue-600 hover:bg-gray-200/50'
                       }`}
                     >
-                      產品規格專區
+                      {iconLang === 'en' ? 'Product Specs' : '產品規格專區'}
                     </button>
                     <button
                       onClick={() => handleTabSwitch('brand')}
@@ -577,36 +644,41 @@
                           : 'text-gray-500 hover:text-[#ee3d85] hover:bg-gray-200/50'
                       }`}
                     >
-                      品牌識別專區
+                      {iconLang === 'en' ? 'Brand Identity' : '品牌識別專區'}
                     </button>
                   </div>
+                  <p className="text-gray-500 mt-5 text-sm font-medium tracking-wide">
+                    {activeTab === 'product' 
+                      ? (iconLang === 'en' ? 'Product visuals, technical spec sheets...' : '產品相關視覺、技術規格表…') 
+                      : (iconLang === 'en' ? 'Official website, e-commerce, official LINE...' : '官網、品牌購物網、官方Line平台…')}
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto animate-fade-in" key={activeTab}>
-                  {currentCategories.map((category) => (
-                    <div
-                      key={category.id}
-                      onClick={() => navigateTo(category.id)}
-                      className={`group cursor-pointer rounded-2xl border-2 border-gray-100 p-5 xl:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white flex flex-col ${theme.cardHover}`}
-                    >
-                      <div className={`grid grid-cols-3 gap-3 xl:gap-4 mb-6 transition-colors duration-300 min-h-[6rem] items-center justify-items-center`}>
-                        {category.icons.map((icon, idx) => (
-                          <div key={idx} className={`text-gray-400 transition-colors duration-300 flex justify-center items-center w-full h-full ${theme.cardIconHoverText}`}>
-                            {icon}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-auto">
-                        <h3 className="text-base font-bold mb-1 text-gray-900">
-                          {iconLang === 'en' && category.enTitle ? category.enTitle : category.title}
-                        </h3>
-                        <p className="text-gray-500 text-sm font-medium">
-                          {category.count} {iconLang === 'en' ? 'icons' : '個圖示'}
-                        </p>
-                      </div>
+                {activeTab === 'product' ? (
+                  <div className="w-full max-w-7xl mx-auto animate-fade-in" key="product-grid">
+                    {/* PNG Icons 區塊 */}
+                    <div className="w-full mb-6 mt-4 flex items-center gap-4">
+                      <h2 className="text-xl font-bold text-gray-800 tracking-wider uppercase">PNG ICONS</h2>
+                      <div className="h-[2px] bg-gray-100 flex-1"></div>
                     </div>
-                  ))}
-                </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                      {pngCategories.map(renderCategoryCard)}
+                    </div>
+
+                    {/* GIF Icons 區塊 */}
+                    <div className="w-full mb-6 flex items-center gap-4">
+                      <h2 className="text-xl font-bold text-gray-800 tracking-wider uppercase">GIF ICONS</h2>
+                      <div className="h-[2px] bg-gray-100 flex-1"></div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                      {gifCategories.map(renderCategoryCard)}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto animate-fade-in" key="brand-grid">
+                    {currentCategories.map(renderCategoryCard)}
+                  </div>
+                )}
               </div>
             ) : 
             
@@ -660,29 +732,11 @@
                 <div className="flex-1 min-w-0">
                   {currentCategoryData && (
                     <React.Fragment>
+                      {/* 移除內頁專屬的語言切換按鈕，保留分類標題 */}
                       <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm py-4 mb-6 border-b border-gray-100 flex items-center justify-between">
                         <h2 className="text-xl font-bold">
                           {iconLang === 'en' && currentCategoryData.enTitle ? currentCategoryData.enTitle : currentCategoryData.title}
                         </h2>
-                        
-                        <div className="flex bg-gray-100 p-1 rounded-lg">
-                          <button
-                            onClick={() => setIconLang('zh')}
-                            className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
-                              iconLang === 'zh' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                          >
-                            CH
-                          </button>
-                          <button
-                            onClick={() => setIconLang('en')}
-                            className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
-                              iconLang === 'en' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                          >
-                            EN
-                          </button>
-                        </div>
                       </div>
 
                       {innerSections.map((section) => (
