@@ -428,9 +428,9 @@
           <div className={`mb-3 text-gray-700 transition-colors ${theme.iconHoverText} duration-300 flex items-center justify-center h-24 shrink-0 w-full`}>
             {iconData.icon}
           </div>
-          <span className="text-sm font-bold text-gray-800 group-hover:text-gray-900 text-center w-full px-1 leading-snug break-words">
-            {displayName}
-          </span>
+          <span className={`${language === 'en' ? 'text-[11px] leading-tight' : 'text-sm leading-snug'} font-bold text-gray-800 group-hover:text-gray-900 text-center w-full px-1 break-words`}>
+        {displayName}
+      </span>
         </div>
       );
     };
