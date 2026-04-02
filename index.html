@@ -533,7 +533,7 @@
       const gifCategories = currentCategories.filter(c => c.id.includes('gif'));
 
       return (
-        <div className="min-h-screen bg-white font-sans text-gray-900 transition-colors duration-300">
+        <div className="min-h-screen bg-white font-sans text-gray-900 transition-colors duration-300 flex flex-col">
           <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -590,6 +590,11 @@
           </header>
 
           <main className="max-w-7xl mx-auto px-6 py-8">
+            <footer className="w-full bg-gray-400 py-2 mt-auto">
+            <div className="max-w-7xl mx-auto px-6 text-center text-white text-[11px] tracking-wider">
+              {iconLang === 'en' ? 'Last Updated: April 2, 2026' : '最後更新日期：2026.04.02'}
+            </div>
+          </footer>
             
             {/* === 視圖 0：全局搜尋結果 === */}
             {isSearching ? (
